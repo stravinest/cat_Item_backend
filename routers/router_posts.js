@@ -1,30 +1,28 @@
-// const express = require('express');
-// const { Posts, sequelize, Sequelize } = require('../models');
+const express = require('express');
+const { Posts, sequelize, Sequelize } = require('../models');
 // const authMiddleware = require('../middlewares/authMiddleware');
 
-// const router = express.Router();
+const router = express.Router();
 
-// router
-//   .route('/')
-//   .get(async (req, res) => {
-//     try {
-//       const userId_join = `
-//             SELECT p.postId, p.userId, u.nickname, p.title, p.content, p.createdAt, p.updatedAt
-//             FROM Posts AS p
-//             JOIN Users AS u
-//             ON p.userId = u.userId
-//             ORDER BY p.postId DESC`;
+router.route('/getPosts').get(async (req, res) => {
+  try {
+    const userId_join = `
+            SELECT p.postId, p.userId, u.nickname, p.title, p.content, p.createdAt, p.updatedAt
+            FROM Posts AS p
+            JOIN Users AS u
+            ON p.userId = u.userId
+            ORDER BY p.postId DESC`;
 
-//       const posts = await sequelize.query(userId_join, {
-//         type: Sequelize.QueryTypes.SELECT,
-//       });
+    const posts = await sequelize.query(userId_join, {
+      type: Sequelize.QueryTypes.SELECT,
+    });
 
-//       res.status(200).send({ posts });
-//     } catch (error) {
-//       console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-//       res.status(400).send({ errorMessage: '게시글 조회에 실패하였습니다.' });
-//     }
-//   })
+    res.status(200).send({ posts });
+  } catch (error) {
+    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+    res.status(400).send({ errorMessage: '게시글 조회에 실패하였습니다.' });
+  }
+});
 //   .post(authMiddleware, async (req, res) => {
 //     try {
 //       const { title, content } = req.body;
@@ -62,4 +60,4 @@
 //   }
 // });
 
-// module.exports = router;
+module.exports = router;
