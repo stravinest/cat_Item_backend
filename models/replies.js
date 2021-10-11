@@ -31,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       replyDelType: {
         required: true,
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
       },
     },
     {

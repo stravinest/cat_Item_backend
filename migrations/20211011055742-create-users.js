@@ -25,6 +25,7 @@ module.exports = {
         type: Sequelize.DATE,
       },
       userDelType: {
+        allowNull: false,
         type: Sequelize.INTEGER,
       },
       updatedAt: {

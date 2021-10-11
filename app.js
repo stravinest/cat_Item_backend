@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
 // const renders = require('./renders'); // 렌더 페이지
-const routers = require('./routes'); // 통신을 수행하는 Router 생성
+const routers = require('./routers'); // 통신을 수행하는 Router 생성
 
 const app = express();
 const port = process.env.EXPRESS_PORT;
