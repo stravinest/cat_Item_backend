@@ -1,0 +1,33 @@
+{
+  "name": "cat_item_backend",
+  "version": "1.0.0",
+  "description": "고양이 프로젝트 백앤드",
+  "main": "app.js",
+  "scripts": {
+    "prettify": "prettier --write .js **/.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stravinest/cat_Item_backend.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stravinest/cat_Item_backend/issues"
+  },
+  "homepage": "https://github.com/stravinest/cat_Item_backend#readme",
+  "devDependencies": {
+    "jest": "^27.2.5",
+    "prettier": "^2.4.1",
+    "supertest": "^6.1.6"
+  },
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mysql2": "^2.3.0",
+    "sequelize": "^6.7.0",
+    "sequelize-cli": "^6.2.0"
+  }
+}
