@@ -23,9 +23,10 @@ module.exports = (sequelize, DataTypes) => {
       },
       userPw: {
         required: true,
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+      },
     },
-   },{
+    {
       sequelize,
       modelName: 'Users',
     }

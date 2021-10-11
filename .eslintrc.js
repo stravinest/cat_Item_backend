@@ -9,9 +9,10 @@ module.exports = {
     node: true,
     mocha: true,
   },
-  extends: 'eslint:recommended',
+  plugins: ['prettier'],
+  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   parserOptions: {
-    ecmaVersion: 12,
+    ecmaVersion: 7,
   },
   rules: {
     indent: ['error', 2], // 들여쓰기를 2칸으로 설정한다.
