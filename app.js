@@ -1,8 +1,8 @@
 const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
-const renders = require('./renders'); // 렌더 페이지
-const routers = require('./routers'); // 통신을 수행하는 Router 생성
+// const renders = require('./renders'); // 렌더 페이지
+const routers = require('./routes'); // 통신을 수행하는 Router 생성
 
 const app = express();
 const port = process.env.EXPRESS_PORT;
@@ -18,8 +18,10 @@ app.use(express.static('./public')); // public에서 파일 참조 가능
 // app.set('view engine', 'ejs');
 
 app.use('/api', routers); // 라우터 폴더 적용
-app.use('/', renders); //
+// app.use('/', renders); //
 
 app.listen(port, () => {
   console.log(`listening at http://localhost:${port}`);
 });
+
+module.exports = app;
