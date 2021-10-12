@@ -51,7 +51,7 @@ router.post(
     if (postInfo) {
       try {
         await Replies.create({ userId, postId, replyContent });
-        res.status(200).send({ result: '댓글 작성에 성공하였습니다.' });
+        res.status(200).send({ result: '댓글 작성 완료!' });
       } catch (error) {
         console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
         res.status(400).send({ errorMessage: '댓글 작성에 실패하였습니다.' });
