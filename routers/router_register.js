@@ -22,7 +22,7 @@ const valCheckPw = function (target_password, target_nickname) {
 };
 
 //회원가입
-router.post('/register', async (req, res) => {
+router.post('/', async (req, res) => {
   let { userId, userPw, nickname } = req.body;
   // res.send({userId, userPw, nickname})
 
@@ -76,7 +76,7 @@ router.post('/register', async (req, res) => {
       salt: salt,
     });
 
-    res.status(201).send({ msg: '회원가입 라우터 status : 201' });
+    res.status(201).send({ msg: '회원가입 완료!' });
   } catch (error) {
     console.log(error);
     res.status(400).send({

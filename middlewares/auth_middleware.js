@@ -1,11 +1,13 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/users');
+const { Users } = require('../models');
 
 module.exports = (req, res, next) => {
-  //헤더 제거 필요함 -> 세션스토리지말고 쿠키 활용방향으로 미들웨어 적용 필요함
+  console.log('auth 미들웨어 진입')
   const authorization = req.cookies.token;
+  console.log(authorization)
 
   if (!authorization) {
+    console.log('first IF')
     res.status(401).send({
       errorMessage: '로그인 후 사용하세요.',
     });
@@ -14,15 +16,20 @@ module.exports = (req, res, next) => {
 
   //토큰 검증
   try {
-    const { userId } = jwt.verify(authorization, 'jasonblog-secret-key');
-
+    console.log('try 진입');
+    const {userId} = jwt.verify(authorization, process.env.SECRET_KEY);
+    console.log(userId)
     //async 함수가 아니므로 await 사용못함 .then활용!
-    User.findOne({ where: { userId: userId } }).then((user) => {
+    Users.findOne({ where: { userId: userId } })
+    .then((user) => {
       //locals는 마음대로 쓸 수 있는 저장공간
-      res.locals.user = user;
+
+      res.locals.user = user
+
       next();
     });
   } catch (error) {
+    console.log(error)
     res.status(401).send({
       errorMessage: '로그인 후 사용하세요.',
     });

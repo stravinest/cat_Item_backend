@@ -3,6 +3,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const renders = require('./renders'); // 파일 등록 test
 const routers = require('./routers'); // 통신을 수행하는 Router 생성
+const cookieParser = require('cookie-parser');
 
 const app = express();
 const port = process.env.EXPRESS_PORT;
@@ -12,25 +13,7 @@ const port = process.env.EXPRESS_PORT;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static('./public')); // public에서 파일 참조 가능
-
-//주혁님
-const { sequelize } = require('./models');
-
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log('DB연결 성공');
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
-const routers_register = require('./routers/router_register'); // 통신을 수행하는 Router 생성
-app.use('/api', routers_register); // 라우터 폴더 적용
-
-const routers_login = require('./routers/router_login'); // 통신을 수행하는 Router 생성
-app.use('/api', routers_login); // 라우터 폴더 적용
-//주혁님
+app.use(cookieParser());
 
 // html을 대체하는 ejs 엔진을 설정
 app.set('views', __dirname + '/views');

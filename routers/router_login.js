@@ -4,7 +4,7 @@ var router = express.Router();
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 
-router.post('/auth', async (req, res) => {
+router.post('/', async (req, res) => {
   let { userId, userPw } = req.body;
 
   //userPw 해시화 후 재할당
@@ -43,12 +43,13 @@ router.post('/auth', async (req, res) => {
 
     res.send({
       code: 201,
+      message: '로그인 완료',
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
+    return res.status(400).json({
       code: 500,
-      message: '서버 에러 발생',
+      errorMessage: '서버 에러 발생',
     });
   }
 });
