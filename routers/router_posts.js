@@ -3,9 +3,7 @@ const fs = require('fs');
 const { Posts, sequelize, Sequelize } = require('../models');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
 const authMiddleware = require("../middlewares/auth_middleware");
-
 
 //upload폴더
 try {
@@ -57,7 +55,7 @@ router.get('/', authMiddleware,async (req, res) => {
 //게시글 등록
 router.post(
   '/post',
-  //authMiddleware,
+  authMiddleware,
   upload.single('image'),
   async (req, res) => {
     try {
@@ -65,7 +63,7 @@ router.post(
       const image = req.file.filename;
       const { title, content } = req.body;
 
-      // const { userId } = res.locals.user;
+      //let { userId } = res.locals.user;
 
       await Posts.create({ userId, title, content, image });
       res.status(200).send({ result: '게시글 작성에 성공하였습니다.' });
@@ -143,6 +141,26 @@ router.patch('/delete/:postId', async (req, res) => {
       }
     );
     res.send({ result: '게시글을 삭제하였습니다.' });
+  } catch (error) {
+    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+    res.status(400).send();
+  }
+});
+
+//-----단일 게시글 세부 조회 추가-----
+
+router.get('/:postId', authMiddleware,async (req, res) => {
+
+  const postId = req.params.postId;
+  //다른 router 스코프 내에서도 선언되야하므로 let 으로 선언
+  let { userId } = res.locals.user;
+  console.log('--------res.locals.user 출력 테스트---------')
+  console.log(userId)
+  try {
+    const postDetail = await Posts.findOne({ where: { postId, userId } });
+    console.log('--------postDetail 출력 테스트---------')
+    console.log({ postDetail });
+    res.send({ result: postDetail });
   } catch (error) {
     console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
     res.status(400).send();

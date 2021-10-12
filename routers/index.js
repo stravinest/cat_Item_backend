@@ -2,13 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const router_posts = require('./router_posts.js');
-<<<<<<< HEAD
+
 // const router_comments = require("./router_comments");
 const router_register = require("./router_register");
 const router_login = require("./router_login");
-=======
 const router_replies = require('./router_replies.js');
->>>>>>> 8be884d7a206ac48fd02a844894b3351beefb587
 
 router.use('/posts', router_posts);
 router.use('/replies', router_replies);
