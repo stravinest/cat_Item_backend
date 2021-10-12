@@ -20,13 +20,18 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE,
-      },
       userDelType: {
         allowNull: false,
         type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      salt: {
+        allowNull: false,
+        type: Sequelize.STRING,
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
