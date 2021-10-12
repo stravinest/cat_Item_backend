@@ -2,7 +2,9 @@ const jwt = require('jsonwebtoken');
 const { Users } = require('../models');
 
 module.exports = (req, res, next) => {
+
   console.log('auth 미들웨어 진입')
+
   const authorization = req.cookies.token;
   console.log(authorization)
 
