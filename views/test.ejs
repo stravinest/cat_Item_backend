@@ -50,52 +50,24 @@
     <title>CRUD 주특기 심화과제</title>
     <script>
       // Html 파일이 전부 로딩되었을 경우 실행
-      if (localStorage.getItem('token')) {
-        getSelf(function () {
-          alert('이미 로그인이 되어있습니다. ');
-          window.location.href = '/board';
-        });
-      }
 
-      function login() {
-        const nickname = $('#nickname').val();
-        const password = $('#pwd').val();
-        $.ajax({
-          type: 'POST',
-          url: '/api/login',
-          data: { nickname, password },
-          success: function (response) {
-            localStorage.setItem('token', response.token);
-            console.log(response.token);
-            alert('로그인 성공');
-            window.location.href = '/board';
-          },
-          error: function (error) {
-            alert('닉네임또는 패스워드를 확인해주세요');
-            customAlert(error.responseJSON.errorMessage);
-          },
-        });
-        // window.location.href = './board';
-      }
-
-      users = () => (window.location.href = './users');
-
-      document.getElementById('form').addEventListener('submit', (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('image', e.target.image.files[0]);
-        formData.append('image', e.target.title.value);
-        formData.append('image', e.target.content.value);
-        axios.post('/api/posts/post', formData);
-      });
+      // document.getElementById('form').addEventListener('submit', (e) => {
+      //   e.preventDefault();
+      //   const formData = new FormData();
+      //   formData.append('image', e.target.image.files[0]);
+      //   formData.append('image', e.target.title.value);
+      //   formData.append('image', e.target.content.value);
+      //   axios.post('/api/posts/post', formData);
+      // });
 
       document.getElementById('form2').addEventListener('submit', (e) => {
+        const postId = 1;
         e.preventDefault();
         const formData = new FormData();
-        formData.append('image', e.target.image.files[0]);
-        formData.append('image', e.target.title.value);
-        formData.append('image', e.target.content.value);
-        axios.post('/api/posts/' + 1, formData);
+        formData.append('image2', e.target.image.files[0]);
+        formData.append('image2', e.target.title.value);
+        formData.append('image2', e.target.content.value);
+        axios.put(`/api/posts/modify/${postId}`, formData);
       });
     </script>
     <style>
@@ -117,9 +89,9 @@
     </style>
   </head>
   <body>
-    <form
+    <!-- <form
       id="form"
-      action="/api/posts/POST"
+      action="/api/posts/post"
       method="post"
       enctype="multipart/form-data"
     >
@@ -127,18 +99,18 @@
       <input type="text" name="title" />
       <input type="content" name="content" />
       <button type="submit">업로드</button>
-    </form>
+    </form> -->
 
     <form
       id="form2"
-      action="/api/posts/:postId"
-      method="post"
+      action="/api/posts/modify"
+      method="put"
       enctype="multipart/form-data"
     >
       <input type="file" name="image" />
       <input type="text" name="title" />
       <input type="content" name="content" />
-      <button type="submit">업로드</button>
+      <button type="submit">수정</button>
     </form>
   </body>
 </html>

@@ -19,6 +19,7 @@ module.exports = {
       },
       replyDelType: {
         type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
       createdAt: {
         allowNull: false,

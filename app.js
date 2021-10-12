@@ -11,20 +11,9 @@ const port = process.env.EXPRESS_PORT;
 // 주소 형식으로 데이터를 보내는 방식
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(express.static('./public')); // public에서 파일 참조 가능
+app.use(express.static('./uploads')); // public에서 파일 참조 가능
 
 //주혁님
-const { sequelize } = require('./models');
-
-sequelize
-  .sync({ force: false })
-  .then(() => {
-    console.log('DB연결 성공');
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
 const routers_register = require('./routers/router_register'); // 통신을 수행하는 Router 생성
 app.use('/api', routers_register); // 라우터 폴더 적용
 

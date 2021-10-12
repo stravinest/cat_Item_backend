@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 
 module.exports = (req, res, next) => {
-  //헤더 제거 필요함 -> 세션스토리지말고 쿠키 활용방향으로 미들웨어 적용 필요함
   const authorization = req.cookies.token;
 
   if (!authorization) {
