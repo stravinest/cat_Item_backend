@@ -1,7 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 dotenv.config();
-// const renders = require('./renders'); // 렌더 페이지
+const renders = require('./renders'); // 파일 등록 test
 const routers = require('./routers'); // 통신을 수행하는 Router 생성
 
 const app = express();
@@ -14,11 +14,11 @@ app.use(express.json());
 app.use(express.static('./public')); // public에서 파일 참조 가능
 
 // html을 대체하는 ejs 엔진을 설정
-// app.set('views', __dirname + '/views');
-// app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 
 app.use('/api', routers); // 라우터 폴더 적용
-// app.use('/', renders); //
+app.use('/', renders); // test
 
 app.listen(port, () => {
   console.log(`listening at http://localhost:${port}`);

@@ -18,15 +18,19 @@
   },
   "homepage": "https://github.com/stravinest/cat_Item_backend#readme",
   "devDependencies": {
+    "ejs": "^3.1.6",
     "eslint": "^8.0.0",
     "jest": "^27.2.5",
     "prettier": "^2.4.1",
-    "supertest": "^6.1.6"
+    "supertest": "^6.1.6",
+    "swagger-jsdoc": "^6.1.0",
+    "swagger-ui-express": "^4.1.6"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.3",
     "mysql2": "^2.3.0",
     "sequelize": "^6.7.0",
     "sequelize-cli": "^6.2.0"
