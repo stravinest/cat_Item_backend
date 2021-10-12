@@ -3,9 +3,7 @@ const fs = require('fs');
 const { Posts, sequelize, Sequelize } = require('../models');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
-const authMiddleware = require("../middlewares/auth_middleware");
-
+const authMiddleware = require('../middlewares/auth_middleware');
 
 //upload폴더
 try {
@@ -30,8 +28,7 @@ const upload = multer({
 const router = express.Router();
 
 //게시글 받아와서 뿌리기
-router.get('/', authMiddleware,async (req, res) => {
-
+router.get('/', authMiddleware, async (req, res) => {
   let result = [];
   try {
     const userId_join = `
