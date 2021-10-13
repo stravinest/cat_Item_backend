@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
       .createHash('sha512')
       .update(userPw + salt)
       .digest('hex');
-
+    console.log(user)
     if (!users || findUserPw != users.userPw) {
       res.status(400).send({
         errorMessage: '아이디 또는 패스워드가 잘못됐습니다.',

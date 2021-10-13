@@ -7,7 +7,6 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger_output.json');
-const cors = require('cors');
 const corsOptions = {
   //origin 배포 후 S3 local 주소로 수정하면 될 듯
   origin: "http://localhost:3000",

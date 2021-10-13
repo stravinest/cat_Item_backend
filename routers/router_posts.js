@@ -30,7 +30,7 @@ const authMiddleware = require('../middlewares/auth_middleware');
 const router = express.Router();
 
 //게시글 받아와서 뿌리기
-router.get('/', authMiddleware, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const userId_join = `
             SELECT p.postId, p.userId, p.title, p.content, p.image, u.nickname, p.createdAt, p.updatedAt
@@ -173,7 +173,7 @@ router.patch('/delete/:postId', authMiddleware, async (req, res) => {
 
 //-----단일 게시글 세부 조회 추가----- 세부 조회시에 댓글 내용도 같이 넘겨주는건?
 
-router.get('/:postId', authMiddleware, async (req, res) => {
+router.get('/:postId', async (req, res) => {
   const postId = req.params.postId;
   //다른 router 스코프 내에서도 선언되야하므로 let 으로 선언
   let { userId } = res.locals.user;
