@@ -25,10 +25,7 @@
       "description": "댓글"
     }
   ],
-  "schemes": [
-    "http",
-    "https"
-  ],
+  "schemes": ["http", "https"],
   "securityDefinitions": {
     "apiKeyAuth": {
       "type": "apiKey",
@@ -37,12 +34,8 @@
       "description": "any description..."
     }
   },
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/api/posts/": {
       "get": {
@@ -74,6 +67,9 @@
                   "example": "any"
                 },
                 "content": {
+                  "example": "any"
+                },
+                "image": {
                   "example": "any"
                 }
               }
@@ -114,6 +110,9 @@
                   "example": "any"
                 },
                 "content": {
+                  "example": "any"
+                },
+                "image": {
                   "example": "any"
                 }
               }
@@ -178,7 +177,20 @@
       "get": {
         "tags": ["reply"],
         "description": "",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "obj",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "postId": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "400": {
             "description": "Bad Request"
@@ -188,7 +200,7 @@
     },
     "/api/replies/post": {
       "post": {
-        "tags": ["Post"],
+        "tags": ["reply"],
         "description": "",
         "parameters": [
           {
@@ -356,7 +368,7 @@
     "/api/user/me": {
       "get": {
         "tags": ["Login"],
-        "description": "로그인 된 해당 유저 정보를 가져옵니다.",
+        "description": "",
         "parameters": [],
         "responses": {
           "401": {
