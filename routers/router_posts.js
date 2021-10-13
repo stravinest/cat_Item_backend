@@ -54,15 +54,13 @@ router.get('/', authMiddleware, async (req, res) => {
 //게시글 등록
 router.post(
   '/post',
-  //authMiddleware,
+  authMiddleware,
   upload.single('image'),
   async (req, res) => {
     try {
-      const userId = 'stravinest'; //로그인 정보에서 가져온다.
+      const { userId } = res.locals.user; //로그인 정보에서 가져온다.
       const image = req.file.filename;
       const { title, content } = req.body;
-
-      // const { userId } = res.locals.user;
 
       await Posts.create({ userId, title, content, image });
       res.status(200).send({ result: '게시글 작성에 성공하였습니다.' });
@@ -74,51 +72,56 @@ router.post(
 );
 
 //게시글 수정
-router.put('/modify/:postId', upload.single('image'), async (req, res) => {
-  try {
-    const postId = req.params.postId;
-    const userId = 'stravinest'; //로그인 정보에서 가져온다.
-    const { title, content } = req.body;
-    const postInfo = await Posts.findOne({ where: { postId } });
-    console.log(postInfo.image);
+router.put(
+  '/modify/:postId',
+  authMiddleware,
+  upload.single('image'),
+  async (req, res) => {
+    try {
+      const postId = req.params.postId;
+      //const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+      const { title, content } = req.body;
+      const postInfo = await Posts.findOne({ where: { postId } });
+      console.log(postInfo.image);
 
-    if (req.file != undefined) {
-      fs.unlinkSync(`./uploads/${postInfo.image}`, (err) => {
-        console.log(err);
-        res.end(err);
-      }); //파일도 삭제해야댐
-      const image = req.file.filename;
-      await Posts.update(
-        {
-          title: title,
-          content: content,
-          image: image,
-        },
-        {
-          where: { postId: postId },
-        }
-      );
-    } else {
-      await Posts.update(
-        {
-          title: title,
-          content: content,
-        },
-        {
-          where: { postId: postId },
-        }
-      );
+      if (req.file != undefined) {
+        fs.unlinkSync(`./uploads/${postInfo.image}`, (err) => {
+          console.log(err);
+          res.end(err);
+        }); //파일도 삭제해야댐
+        const image = req.file.filename;
+        await Posts.update(
+          {
+            title: title,
+            content: content,
+            image: image,
+          },
+          {
+            where: { postId: postId },
+          }
+        );
+      } else {
+        await Posts.update(
+          {
+            title: title,
+            content: content,
+          },
+          {
+            where: { postId: postId },
+          }
+        );
+      }
+
+      res.send({ result: '게시글을 수정하였습니다.' });
+    } catch (error) {
+      console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+      res.status(400).send();
     }
-
-    res.send({ result: '게시글을 수정하였습니다.' });
-  } catch (error) {
-    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-    res.status(400).send();
   }
-});
+);
 
 //게시글 삭제
-router.patch('/delete/:postId', async (req, res) => {
+router.patch('/delete/:postId', authMiddleware, async (req, res) => {
   try {
     console.log('여기');
     const postId = req.params.postId;
@@ -126,11 +129,10 @@ router.patch('/delete/:postId', async (req, res) => {
     console.log(postInfo.image);
     fs.unlinkSync(`./uploads/${postInfo.image}`, (err) => {
       //동기로 처리안하면 에러나는데 .. 흠 어떻게 해야할까?
-
       console.log(err);
       res.end(err);
     }); //파일도 삭제해야댐
-    console.log('삭제?');
+
     await Posts.update(
       {
         postDelType: 1,
