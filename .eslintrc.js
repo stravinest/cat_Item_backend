@@ -12,7 +12,7 @@ module.exports = {
   plugins: ['prettier'],
   extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   parserOptions: {
-    ecmaVersion: 7,
+    ecmaVersion: 12,
   },
   rules: {
     indent: ['error', 2], // 들여쓰기를 2칸으로 설정한다.

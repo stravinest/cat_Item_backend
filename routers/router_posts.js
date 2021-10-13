@@ -1,35 +1,34 @@
 const express = require('express');
-const fs = require('fs');
 const { Posts, sequelize, Sequelize } = require('../models');
-const multer = require('multer');
-const path = require('path');
 const authMiddleware = require('../middlewares/auth_middleware');
+// const fs = require('fs');
+// const multer = require('multer');
+// const path = require('path');
 
-//upload폴더
-try {
-  fs.readdirSync('uploads');
-} catch (error) {
-  console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
-  fs.mkdirSync('uploads');
-}
-const upload = multer({
-  storage: multer.diskStorage({
-    destination(req, file, cb) {
-      cb(null, 'uploads/');
-    },
-    filename(req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-    },
-  }),
-  limits: { fileSize: 5 * 1024 * 1024 },
-});
+// //upload폴더
+// try {
+//   fs.readdirSync('uploads');
+// } catch (error) {
+//   console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
+//   fs.mkdirSync('uploads');
+// }
+// const upload = multer({
+//   storage: multer.diskStorage({
+//     destination(req, file, cb) {
+//       cb(null, 'uploads/');
+//     },
+//     filename(req, file, cb) {
+//       const ext = path.extname(file.originalname);
+//       cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
+//     },
+//   }),
+//   limits: { fileSize: 5 * 1024 * 1024 },
+// });
 
 const router = express.Router();
 
 //게시글 받아와서 뿌리기
 router.get('/', authMiddleware, async (req, res) => {
-  let result = [];
   try {
     const userId_join = `
             SELECT p.postId, p.userId, p.title, p.content, p.image, u.nickname, p.createdAt, p.updatedAt
@@ -42,12 +41,12 @@ router.get('/', authMiddleware, async (req, res) => {
     const posts = await sequelize.query(userId_join, {
       type: Sequelize.QueryTypes.SELECT,
     });
-
-    console.log({ posts });
     res.send({ result: posts });
   } catch (error) {
     console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-    res.status(400).send();
+    res.status(400).send({
+      errorMessage: '전체 게시글 조회에 실패했습니다.',
+    });
   }
 });
 
@@ -55,12 +54,12 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post(
   '/post',
   authMiddleware,
-  upload.single('image'),
+  // upload.single('image'),
   async (req, res) => {
     try {
       const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-      const image = req.file.filename;
-      const { title, content } = req.body;
+      // const image = req.file.filename;
+      const { title, content,image } = req.body;
 
       await Posts.create({ userId, title, content, image });
       res.status(200).send({ result: '게시글 작성에 성공하였습니다.' });
@@ -115,7 +114,9 @@ router.put(
       res.send({ result: '게시글을 수정하였습니다.' });
     } catch (error) {
       console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-      res.status(400).send();
+      res.status(400).send({
+        errorMessage: '게시글 수정에 실패했습니다.',
+      });
     }
   }
 );
@@ -142,6 +143,29 @@ router.patch('/delete/:postId', authMiddleware, async (req, res) => {
       }
     );
     res.send({ result: '게시글을 삭제하였습니다.' });
+  } catch (error) {
+    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+    res.status(400).send({
+      errorMessage: '게시글 삭제에 실패했습니다.',
+    });
+  }
+});
+
+//-----단일 게시글 세부 조회 추가----- 세부 조회시에 댓글 내용도 같이 넘겨주는건?
+
+router.get('/:postId', authMiddleware, async (req, res) => {
+  const postId = req.params.postId;
+  //다른 router 스코프 내에서도 선언되야하므로 let 으로 선언
+  let { userId } = res.locals.user;
+  console.log('--------res.locals.user 출력 테스트---------');
+  console.log(userId);
+  try {
+    // const postDetail = await Posts.findOne({ where: { postId, userId } });
+    // //포스트아이디랑 userid 둘다 같아야 되서 내가 쓰지않은 글은 조회가 안됨
+    const postDetail = await Posts.findOne({ where: { postId } });
+    console.log('--------postDetail 출력 테스트---------');
+    console.log({ postDetail });
+    res.send({ result: postDetail });
   } catch (error) {
     console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
     res.status(400).send();
