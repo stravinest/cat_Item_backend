@@ -76,7 +76,7 @@ router.post('/', async (req, res) => {
       salt: salt,
     });
 
-    res.status(201).send({ msg: '회원가입 완료!' });
+    res.status(200).send({ msg: '회원가입 완료!' });
   } catch (error) {
     console.log(error);
     res.status(400).send({
