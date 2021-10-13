@@ -29,13 +29,13 @@ module.exports = (sequelize, DataTypes) => {
         required: true,
         type: DataTypes.STRING,
       },
-      salt: {
-        required: true,
-        type: DataTypes.STRING,
-      },
       userDelType: {
         required: true,
         type: DataTypes.INTEGER,
+      },
+      salt: {
+        required: true,
+        type: DataTypes.STRING,
       },
     },
     {
