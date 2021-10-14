@@ -6,7 +6,7 @@ const doc = {
     title: '8조 API',
     description: 'Description',
   },
-  host: 'localhost:3000',
+  host: '3.34.255.91',
   basePath: '/',
   schemes: ['http','https'],
   consumes: ['application/json'],
@@ -30,12 +30,12 @@ const doc = {
     }
   ],
   securityDefinitions: {
-      apiKeyAuth:{
-          type: "apiKey",
-          in: "header",       // can be "header", "query" or "cookie"
-          name: "X-API-KEY",  // name of the header, query parameter or cookie
-          description: "any description..."
-      }
+    Bearer: {
+      type: "apiKey",
+      name: "Authorization",
+      in: "header",
+      description: "send JWT",
+    },
   },
   definitions: {
     Users: {
