@@ -46,62 +46,27 @@
     ></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.4.0/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
     <!-- <script src="/api.js"></script> -->
     <title>CRUD 주특기 심화과제</title>
-    <script>
-      // Html 파일이 전부 로딩되었을 경우 실행
-
-      // document.getElementById('form').addEventListener('submit', (e) => {
-      //   e.preventDefault();
-      //   const formData = new FormData();
-      //   formData.append('image', e.target.image.files[0]);
-      //   formData.append('image', e.target.title.value);
-      //   formData.append('image', e.target.content.value);
-      //   axios.post('/api/posts/post', formData);
-      // });
-
-      document.getElementById('form2').addEventListener('submit', (e) => {
-        const postId = 1;
-        e.preventDefault();
-        const formData = new FormData();
-        formData.append('image2', e.target.image.files[0]);
-        formData.append('image2', e.target.title.value);
-        formData.append('image2', e.target.content.value);
-        axios.put(`/api/posts/modify/${postId}`, formData);
-      });
-    </script>
+   
     <style>
-      .card {
-        cursor: pointer;
-      }
-
-      html {
-        overflow: auto;
-      }
-      .wrap {
-        width: 500px;
-        margin: 80px auto;
-        padding: 20px;
-      }
-      .height {
-        height: 180px;
-      }
     </style>
   </head>
   <body>
-    <!-- <form
+    <form
       id="form"
-      action="/api/posts/post"
+      action="/api/posts/modify/:postId"
       method="post"
       enctype="multipart/form-data"
     >
       <input type="file" name="image" />
       <input type="text" name="title" />
-      <input type="content" name="content" />
-      <button type="submit">업로드</button>
-    </form> -->
+      <input type="text" name="content" />
+      <button type="submit">수정</button>
+    </form>
 
-    <form
+     <!-- <form
       id="form2"
       action="/api/posts/modify"
       method="put"
@@ -111,6 +76,29 @@
       <input type="text" name="title" />
       <input type="content" name="content" />
       <button type="submit">수정</button>
-    </form>
+    </form> -->
   </body>
-</html>
+  <script>
+    // Html 파일이 전부 로딩되었을 경우 실행
+
+    document.getElementById('form').addEventListener('submit', (e) => {
+      const postId =24
+      e.preventDefault();
+      const formData = new FormData();
+      formData.append('image', e.target.image.files[0]);
+      formData.append('title', e.target.title.value);
+      formData.append('content', e.target.content.value);
+      axios.post(`/api/posts/modify/${postId}`, formData);
+    });
+
+    // document.getElementById('form').addEventListener('submit', (e) => {
+    //   const postId = 1;
+    //   e.preventDefault();
+    //   const formData = new FormData();
+    //   formData.append('image', e.target.image.files[0]);
+    //   formData.append('image', e.target.title.value);
+    //   formData.append('image2', e.target.content.value);
+    //   axios.put(`/api/posts/modify/${postId}`, formData);
+    // });
+  </script>
+</html> 

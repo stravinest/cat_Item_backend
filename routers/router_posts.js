@@ -1,33 +1,30 @@
 const express = require('express');
+const router = express.Router();
 const { Posts, sequelize, Sequelize } = require('../models');
 const authMiddleware = require('../middlewares/auth_middleware');
-
-// multi part form data로 이미지파일을 받으려 했으나 이미지 url만 넘겨서 받기로 수정
 // const fs = require('fs');
-// const multer = require('multer');
-// const path = require('path');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
+const sharp = require('sharp');
+const AWS = require('aws-sdk');
+const path = require('path');
+AWS.config.update({
+  accessKeyId: process.env.S3_ACCESS_KEY_ID,
+  secretAccessKey: process.env.S3_SECRET_ACCESS_KEY,
+  region: 'ap-northeast-2',
+});
 
-// //upload폴더
-// try {
-//   fs.readdirSync('uploads');
-// } catch (error) {
-//   console.error('uploads 폴더가 없어 uploads 폴더를 생성합니다.');
-//   fs.mkdirSync('uploads');
-// }
-// const upload = multer({
-//   storage: multer.diskStorage({
-//     destination(req, file, cb) {
-//       cb(null, 'uploads/');
-//     },
-//     filename(req, file, cb) {
-//       const ext = path.extname(file.originalname);
-//       cb(null, path.basename(file.originalname, ext) + Date.now() + ext);
-//     },
-//   }),
-//   limits: { fileSize: 5 * 1024 * 1024 },
-// });
-
-const router = express.Router();
+const upload = multer({
+  storage: multerS3({
+    s3: new AWS.S3(),
+    bucket: 'stravinestbucket',
+    key(req, file, cb) {
+      cb(null, `original/${Date.now()}${path.basename(file.originalname)}`);
+    },
+    acl: 'public-read-write',
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+});
 
 //게시글 받아와서 뿌리기
 router.get('/', async (req, res) => {
@@ -52,22 +49,44 @@ router.get('/', async (req, res) => {
   }
 });
 
+router.post('/upload', upload.single('image'), function (req, res) {
+  const originalUrl = req.file.location;
+  console.log(req.body);
+  const { title, content } = req.body;
+  const url = originalUrl.replace(/\/original\//, '/thumb/');
+  console.log(title, content);
+  console.log(originalUrl);
+  console.log(url);
+  res.json({ url, originalUrl });
+});
+
 //게시글 등록
 router.post(
   '/post',
   authMiddleware,
-  // upload.single('image'),
+  upload.single('image'),
   async (req, res) => {
     try {
       const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-      // const image = req.file.filename;
-      const { title, content, image } = req.body;
+      const { title, content } = req.body;
+      if (req.file) {
+        const originalUrl = req.file.location;
+        console.log(req.file.filename);
+        const resizeUrl = originalUrl.replace(/\/original\//, '/thumb/');
+        const arr = resizeUrl.split('/');
+        console.log('arr는', arr[5]);
+        console.log(resizeUrl);
+        await Posts.create({ userId, title, content, image: originalUrl });
 
-      await Posts.create({ userId, title, content, image });
-      res.status(200).send({ result: '게시글 작성에 성공하였습니다.' });
+        res.status(200).send({ result: '게시글 작성에 성공하였습니다.' });
+        // res.json({ resizeUrl, originalUrl });
+      } else {
+        console.log('이미지 파일이 없습니다.');
+        res.status(400).send({ errorMessage: '이미지파일이 없습니다.' });
+      }
     } catch (error) {
       console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-      res.status(400).send({ errorMessage: '게시글 작성에 실패하였습니다.' });
+      res.status(401).send({ errorMessage: '게시글 작성에 실패하였습니다.' });
     }
   }
 );
@@ -76,55 +95,79 @@ router.post(
 router.put(
   '/modify/:postId',
   authMiddleware,
-  // upload.single('image'),
+  upload.single('image'),
   async (req, res) => {
     try {
+      const s3 = new AWS.S3();
       const postId = req.params.postId;
       const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-      const { title, content, image } = req.body;
-      const postInfo = await Posts.findOne({ where: { postId, userId } });
-      console.log(postInfo);
-      if (postInfo) {
-        await Posts.update(
+      const { title, content } = req.body;
+      if (req.file) {
+        //이미지가 있을때 기존 이미지를 s3에서 삭제해야됨
+        const postInfo = await Posts.findOne({ where: { postId, userId } });
+        console.log(postInfo.image);
+        const beforeImage = postInfo.image.split('/')[4]; //이미지 주소 분리
+
+        await s3.deleteObject(
+          //original기존 파일 삭제
           {
-            title: title,
-            content: content,
-            image: image,
+            Bucket: 'stravinestbucket',
+            Key: `original/${beforeImage}`,
           },
-          {
-            where: { postId: postId, userId: userId },
+          (err, data) => {
+            if (err) {
+              throw err;
+            }
+            console.log('s3 deleteObject', data);
           }
         );
-        res.send({ result: '게시글을 수정하였습니다.' });
+        await s3.deleteObject(
+          //thumb기존 파일 삭제
+          {
+            Bucket: 'stravinestbucket',
+            Key: `thumb/${beforeImage}`,
+          },
+          (err, data) => {
+            if (err) {
+              throw err;
+            }
+            console.log('s3 thumb deleteObject', data);
+          }
+        );
+
+        const originalUrl = req.file.location; // 새로 교최된 이미지 url
+        //   const resizeUrl = originalUrl.replace(/\/original\//, '/thumb/');
+
+        if (postInfo) {
+          await Posts.update(
+            {
+              title: title,
+              content: content,
+              image: originalUrl, //이미지 새로 교체해서 넣어줌
+            },
+            {
+              where: { postId: postId, userId: userId },
+            }
+          );
+          res.send({ result: '게시글을 수정하였습니다.' });
+        } else res.send({ result: '게시글 수정 실패 되었습니다.' });
+      } else {
+        //이미지가 없을때
+        const postInfo = await Posts.findOne({ where: { postId, userId } });
+        if (postInfo) {
+          await Posts.update(
+            {
+              title: title,
+              content: content,
+            },
+            {
+              where: { postId: postId, userId: userId },
+            }
+          );
+          res.send({ result: '게시글을 수정하였습니다.' });
+        } else res.send({ result: '게시글 수정 실패 되었습니다.' });
       }
-      res.send({ result: '게시글 수정 실패 되었습니다.' });
-      // if (req.file != undefined) {
-      //   fs.unlinkSync(`./uploads/${postInfo.image}`, (err) => {
-      //     console.log(err);
-      //     res.end(err);
-      //   }); //파일도 삭제해야댐
-      //   const image = req.file.filename;
-      //   await Posts.update(
-      //     {
-      //       title: title,
-      //       content: content,
-      //       image: image,
-      //     },
-      //     {
-      //       where: { postId: postId },
-      //     }
-      //   );
-      // } else {
-      //   await Posts.update(
-      //     {
-      //       title: title,
-      //       content: content,
-      //     },
-      //     {
-      //       where: { postId: postId },
-      //     }
-      //   );
-      // }
+      //
     } catch (error) {
       console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
       res.status(400).send({
@@ -140,14 +183,26 @@ router.patch('/delete/:postId', authMiddleware, async (req, res) => {
     const postId = req.params.postId;
     const { userId } = res.locals.user; //로그인 정보에서 가져온다.
     const postInfo = await Posts.findOne({ where: { postId, userId } });
-    // fs.unlinkSync(`./uploads/${postInfo.image}`, (err) => {
-    //   //동기로 처리안하면 에러나는데 .. 흠 어떻게 해야할까?
-    //   console.log(err);
-    //   res.end(err);
-    // }); //파일도 삭제해야댐
+
+    // const s3 = new AWS.S3();
+    // const beforeImage = postInfo.image.split('/')[4]; //이미지 주소 분리
     if (postInfo) {
-      console.log('여기되자나?');
+      // s3.deleteObject(
+      //   //기존 파일 삭제
+      //   {
+      //     Bucket: 'stravinestbucket',
+      //     Key: `original/${beforeImage}`,
+      //   },
+      //   (err, data) => {
+      //     if (err) {
+      //       throw err;
+      //     }
+      //     console.log('s3 deleteObject', data);
+      //   }
+      // );
+
       await Posts.update(
+        //deltype 숫자 수정
         {
           postDelType: 1,
         },
