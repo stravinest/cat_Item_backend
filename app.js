@@ -18,7 +18,6 @@ const corsOptions = {
   credentials: true,
 };
 app.use(cors(corsOptions));
-// app.use(cors());
 // 최 상단에서 request로 수신되는 Post 데이터가 정상적으로 수신되도록 설정한다.
 // 주소 형식으로 데이터를 보내는 방식
 app.use(express.urlencoded({ extended: true }));

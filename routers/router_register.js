@@ -21,12 +21,12 @@ const valCheckPw = function (target_password, target_nickname) {
   return false;
 };
 
+
 //회원가입
 router.post('/', async (req, res) => {
-  let { userId, userPw, nickname } = req.body;
-  // res.send({userId, userPw, nickname})
-
   try {
+    let { userId, userPw, nickname } = req.body;
+
     if (!valCheckId(nickname)) {
       res.status(400).send({
         errorMessage:
@@ -77,6 +77,7 @@ router.post('/', async (req, res) => {
     });
 
     res.status(200).send({ msg: '회원가입 완료!' });
+
   } catch (error) {
     console.log(error);
     res.status(400).send({
