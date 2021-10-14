@@ -7,11 +7,6 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const swaggerUi = require('swagger-ui-express');
 const swaggerFile = require('./swagger_output.json');
-const corsOptions = {
-  //origin 배포 후 S3 local 주소로 수정하면 될 듯
-  origin: "http://localhost:3000",
-  credentials: true
-}
 
 const app = express();
 const port = process.env.EXPRESS_PORT;
@@ -31,7 +26,6 @@ app.use(express.json());
 
 app.use(cookieParser());
 app.use(express.static('./uploads')); // uploads에서 파일 참조 가능
-app.use(cors(corsOptions));
 
 // html을 대체하는 ejs 엔진을 설정
 app.set('views', __dirname + '/views');

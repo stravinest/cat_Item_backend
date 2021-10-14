@@ -11,13 +11,21 @@ router.post('/', async (req, res) => {
 
   try {
     const users = await Users.findOne({ where: { userId } });
+
+    if (!users) {
+      res.status(400).send({
+        errorMessage: '아이디 또는 패스워드가 잘못됐습니다.',
+      });
+    }
+
     let salt = users.salt;
     findUserPw = crypto
       .createHash('sha512')
       .update(userPw + salt)
       .digest('hex');
-    console.log(user)
-    if (!users || findUserPw != users.userPw) {
+      
+    console.log(users)
+    if (findUserPw != users.userPw) {
       res.status(400).send({
         errorMessage: '아이디 또는 패스워드가 잘못됐습니다.',
       });
