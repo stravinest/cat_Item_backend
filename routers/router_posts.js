@@ -150,7 +150,7 @@ router.put(
             }
           );
           res.send({ result: '게시글을 수정하였습니다.' });
-        } else res.send({ result: '게시글 수정 실패 되었습니다.' });
+        } else res.status(401).send({ result: '게시글 수정 실패 되었습니다.' });
       } else {
         //이미지가 없을때
         const postInfo = await Posts.findOne({ where: { postId, userId } });
@@ -165,7 +165,7 @@ router.put(
             }
           );
           res.send({ result: '게시글을 수정하였습니다.' });
-        } else res.send({ result: '게시글 수정 실패 되었습니다.' });
+        } else res.status(401).send({  errorMessage: '이미지가 없고 해당게시글도 없습니다..' });
       }
       //
     } catch (error) {
@@ -214,7 +214,7 @@ router.patch('/delete/:postId', authMiddleware, async (req, res) => {
       // console.log(postInfo2.postDelType);
       res.send({ result: '게시글을 삭제하였습니다.' });
     } else {
-      res.status(400).send({
+      res.status(401).send({
         errorMessage: '삭제할수 없는 게시물입니다.',
       });
     }
