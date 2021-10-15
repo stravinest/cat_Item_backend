@@ -4,16 +4,7 @@ const { Users } = require('../models');
 module.exports = (req, res, next) => {
 
   console.log('auth 미들웨어 진입')
-  console.log('---req 출력---')
-  console.log(req)
-  console.log('---req.header 출력---')
-  console.log(req.header)
-  console.log('---req.header.cookie 출력---')
-  console.log(req.header.cookie)
-  console.log('---req.header.cookies 출력---')
-  console.log(req.header.cookies)
-
-  const authorization = req.cookies.token;
+  const { authorization } = req.headers;
 
   if (!authorization) {
     console.log('first IF')
