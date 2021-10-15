@@ -86,9 +86,13 @@ router.put('/modifyImageUrl/:postId', authMiddleware, async (req, res) => {
     const s3 = new AWS.S3(); //s3 파일 삭제를 하기 위해 생성
     const postId = req.params.postId;
     const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+    console.log(userId)
+    console.log(postId)
+
     // const userId = 'stravinest';
     const { title, content, image } = req.body;
     const postInfo = await Posts.findOne({ where: { postId, userId } });
+    console.log(postInfo)
     //받은 userID와 postId  와 일치하는 게시글 찾기
     if (postInfo) {
       //게시글 있으면 아래실행
