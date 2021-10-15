@@ -6,7 +6,7 @@ const doc = {
     title: '8조 API',
     description: 'Description',
   },
-  host: '3.34.255.91',
+  host: '3.34.255.91', //배포 하려고 하는 host에 맞춰줘야 동작함
   basePath: '/',
   schemes: ['http','https'],
   consumes: ['application/json'],
@@ -29,7 +29,7 @@ const doc = {
       "description": "댓글"
     }
   ],
-  securityDefinitions: {
+  securityDefinitions: {//header 방식으로 로그인할때 연결 방법 
     Bearer: {
       type: "apiKey",
       name: "Authorization",
@@ -122,3 +122,5 @@ const endpointsFiles = ['./app.js'];
 // const endpointsFiles = ['./app.js'];
 
 swaggerAutogen(outputFile, endpointsFiles, doc)
+//swaggerAutogen으로 outputfile 파일을 app.js 루트로 api 들을 생성한다. 
+//이때 명령어는 터미널에서 node swagger.js
