@@ -29,13 +29,14 @@ router.post('/', async (req, res) => {
   try {
     let { userId, userPw, nickname } = req.body;
 
-    if (!valCheckId(userId)) {
-      res.status(400).send({
-        errorMessage:
-          '아이디는 알파벳 대소문자와 숫자만 사용할 수 있으며, 최소 3자리 이상이어야 합니다.',
-      });
-      return;
-    }
+    // 프론트와 논의함 => id는 메일로 받기로.
+    // if (!valCheckId(userId)) {
+    //   res.status(400).send({
+    //     errorMessage:
+    //       '아이디는 알파벳 대소문자와 숫자만 사용할 수 있으며, 최소 3자리 이상이어야 합니다.',
+    //   });
+    //   return;
+    // }
 
     //패스워드 유효성 체크
     if (!valCheckPw(userPw, nickname)) {
