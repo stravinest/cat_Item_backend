@@ -288,10 +288,11 @@ router.put(
 );
 
 //게시글 삭제
-router.patch('/delete/:postId', authMiddleware, async (req, res) => {
+router.patch('/delete/:postId', async (req, res) => {
   try {
     const postId = req.params.postId;
-    const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+    //  const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+    const userId = 'stravinest';
     const postInfo = await Posts.findOne({ where: { postId, userId } });
 
     // const s3 = new AWS.S3();
@@ -317,7 +318,7 @@ router.patch('/delete/:postId', authMiddleware, async (req, res) => {
           postDelType: 1,
         },
         {
-          where: { postId: postInfo.postId, userId: postInfo.userId },
+          where: { postId: postInfo.postId, userId: userId },
         }
       );
       // const postInfo2 = await Posts.findOne({ where: { postId, userId } });
@@ -341,19 +342,26 @@ router.patch('/delete/:postId', authMiddleware, async (req, res) => {
 router.get('/:postId', async (req, res) => {
   const postId = req.params.postId;
   //다른 router 스코프 내에서도 선언되야하므로 let 으로 선언
-  let { userId } = res.locals.user;
+
   console.log('--------res.locals.user 출력 테스트---------');
-  console.log(userId);
   try {
     // const postDetail = await Posts.findOne({ where: { postId, userId } });
     // //포스트아이디랑 userid 둘다 같아야 되서 내가 쓰지않은 글은 조회가 안됨
     const postDetail = await Posts.findOne({ where: { postId } });
-    console.log('--------postDetail 출력 테스트---------');
-    console.log({ postDetail });
-    res.send({ result: postDetail });
+    if (postDetail) {
+      console.log('--------postDetail 출력 테스트---------');
+      console.log({ postDetail });
+      res.send({ result: postDetail });
+    } else {
+      res.status(401).send({
+        errorMessage: '조회할수 있는 게시물이 없습니다.',
+      });
+    }
   } catch (error) {
     console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-    res.status(400).send();
+    res.status(400).send({
+      errorMessage: '게시물 상세조회에 실패 했습니다.',
+    });
   }
 });
 
