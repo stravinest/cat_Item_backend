@@ -4,13 +4,15 @@ var router = express.Router();
 const crypto = require('crypto');
 
 //유효성체크 함수
-const valCheckId = function (target_nickname) {
-  const regex_nick = /([a-z]|[A-Z]|[0-9]){3,}/g;
-  const nicknameCheckResult = target_nickname.match(regex_nick);
+//id 유효성 체크 -  알파벳 대소문자, 숫자만 사용가능, 최소 3자리 이상
+const valCheckId = function (target_id) {
+  const regex_id = /([a-z]|[A-Z]|[0-9]){3,}/g;
+  const idCheckResult = target_id.match(regex_id);
 
-  return nicknameCheckResult == target_nickname;
+  return idCheckResult == target_id;
 };
 
+//pw 유효성 체크 - 패스워드는 닉네임과 같은 내용이 포함될 수 없음, 최소 4자리 이상
 const valCheckPw = function (target_password, target_nickname) {
   if (
     target_nickname.indexOf(target_password) == -1 &&
@@ -27,10 +29,10 @@ router.post('/', async (req, res) => {
   try {
     let { userId, userPw, nickname } = req.body;
 
-    if (!valCheckId(nickname)) {
+    if (!valCheckId(userId)) {
       res.status(400).send({
         errorMessage:
-          '닉네임은 알파벳 대소문자와 숫자만 사용할 수 있으며, 최소 3자리 이상이어야 합니다.',
+          '아이디는 알파벳 대소문자와 숫자만 사용할 수 있으며, 최소 3자리 이상이어야 합니다.',
       });
       return;
     }
@@ -69,6 +71,7 @@ router.post('/', async (req, res) => {
       .update(userPw + salt)
       .digest('hex');
 
+    //salt값 같이 저장해야함. 없으면 로그인 시 비교불가
     await Users.create({
       userId: userId,
       userPw: userPw,

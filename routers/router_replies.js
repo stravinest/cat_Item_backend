@@ -4,10 +4,7 @@ const authMiddleware = require('../middlewares/auth_middleware');
 
 const router = express.Router();
 
-//댓글 뿌리기 필요한지??
-//(10.12. / 주혁 / status : 코드수정 안했음 - 정상 response 출력 확인)
-
-//(10.13. / 주혁 / status : preValCheck 적용 및 쿼리 수정 - 정상 response 출력 확인)
+//댓글 조회
 router.get('/', async (req, res) => {
   let result = [];
   const { postId } = req.body;
@@ -42,8 +39,7 @@ router.get('/', async (req, res) => {
 });
 
 //댓글 등록
-//(10.12. / 주혁 / status : db에 정상 적용 및 메세지 response 확인)
-//param 말고 body data로 가져오는게 나을 듯. 상세페이지에서 등록하고 상세 조회 시 url에 postId 입력되어있으므로.
+//param 말고 body data로 가져오도록. 상세페이지에서 등록하고 상세 조회 시 url에 postId 입력되어있으므로.
 router.post(
   '/post',
   authMiddleware,
@@ -76,7 +72,6 @@ router.post(
 });
 
 //댓글 삭제
-//(10.12. / 주혁 / status : db에 정상 적용 및 메세지 response 확인)
 router.patch('/delete', authMiddleware, async (req, res) => {
   let { userId } = res.locals.user;
   const { postId, replyId } = req.body;
@@ -108,7 +103,6 @@ router.patch('/delete', authMiddleware, async (req, res) => {
 });
 
 //댓글 수정
-//(10.12. / 주혁 / status : db에 정상 적용 및 메세지 response 확인)
 router.put('/modify', authMiddleware, async (req, res) => {
   let { userId } = res.locals.user;
   const { postId, replyId, replyContent } = req.body;
