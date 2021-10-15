@@ -9,10 +9,10 @@
   "basePath": "/",
   "components": {
     "securitySchemes": {
-      "cookieAuth": {
-        "type": "apiKey",
-        "in": "cookie",
-        "name": "JSESSIONID"
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   },
@@ -20,13 +20,12 @@
     "cookieAuth": []
   }],  
   "securityDefinitions": {
-      "cookieAuth": {
-        "type": "apiKey",
-        "name":"Cookie",
-        "in": "header",
-        "description": "cookiesend"
-      }
-    
+    "Bearer": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in":"header",
+      "description": "send JWT"
+    }
   },
 
 
