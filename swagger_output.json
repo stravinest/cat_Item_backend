@@ -19,7 +19,15 @@
   "security": [{
     "cookieAuth": []
   }],  
-
+  "securityDefinitions": {
+      "cookieAuth": {
+        "type": "apiKey",
+        "name":"Cookie",
+        "in": "header",
+        "description": "cookiesend"
+      }
+    
+  },
 
 
   "tags": [
@@ -41,14 +49,6 @@
     }
   ],
   "schemes": ["http", "https"],
-  "securityDefinitions": {
-    "apiKeyAuth": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "X-API-KEY",
-      "description": "any description..."
-    }
-  },
   "consumes": ["application/json"],
   "produces": ["application/json"],
   "paths": {

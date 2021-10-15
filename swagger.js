@@ -6,7 +6,7 @@ const doc = {
     title: '8조 API',
     description: 'Description',
   },
-  host: '3.34.255.91', //배포 하려고 하는 host에 맞춰줘야 동작함
+  host: 'localhost:3000', //배포 하려고 하는 host에 맞춰줘야 동작함
   basePath: '/',
   schemes: ['http','https'],
   consumes: ['application/json'],
@@ -30,12 +30,12 @@ const doc = {
     }
   ],
   securityDefinitions: {//header 방식으로 로그인할때 연결 방법 
-    Bearer: {
+    cookieAuth: {
       type: "apiKey",
-      name: "Authorization",
+      name:"Cookie",
       in: "header",
-      description: "send JWT",
-    },
+      description: "cookiesend"
+    }
   },
   definitions: {
     Users: {

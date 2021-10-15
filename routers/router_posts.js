@@ -65,106 +65,98 @@ router.post('/upload', upload.single('image'), function (req, res) {
 });
 
 //게시글 등록 body 로 이미지 받는 방식
-router.post(
-  '/postImageUrl',
-  // authMiddleware,
-  async (req, res) => {
-    try {
-      //const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-      const userId = 'stravinest';
-      const { title, content, image } = req.body; //formdata로 같이 넘어옴
+router.post('/postImageUrl', authMiddleware, async (req, res) => {
+  try {
+    const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+    // const userId = 'stravinest';
+    const { title, content, image } = req.body; //formdata로 같이 넘어옴
 
-      await Posts.create({ userId, title, content, image });
+    await Posts.create({ userId, title, content, image });
 
-      res.status(200).send({ result: '게시글 작성에 성공하였습니다.' });
-    } catch (error) {
-      console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-      res.status(401).send({ errorMessage: '게시글 작성에 실패하였습니다.' });
-    }
+    res.status(200).send({ result: '게시글 작성에 성공하였습니다.' });
+  } catch (error) {
+    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+    res.status(401).send({ errorMessage: '게시글 작성에 실패하였습니다.' });
   }
-);
+});
 
 //게시글 수정 body 로 이미지 받는 방식
-router.put(
-  '/modifyImageUrl/:postId',
-  // authMiddleware,
-  async (req, res) => {
-    try {
-      const s3 = new AWS.S3(); //s3 파일 삭제를 하기 위해 생성
-      const postId = req.params.postId;
-      //   const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-      const userId = 'stravinest';
-      const { title, content, image } = req.body;
-      const postInfo = await Posts.findOne({ where: { postId, userId } });
-      //받은 userID와 postId  와 일치하는 게시글 찾기
-      if (postInfo) {
-        //게시글 있으면 아래실행
-        console.log(postInfo.image);
-        const beforeImage = postInfo.image.split('/')[4]; //이미지 주소 분리
+router.put('/modifyImageUrl/:postId', authMiddleware, async (req, res) => {
+  try {
+    const s3 = new AWS.S3(); //s3 파일 삭제를 하기 위해 생성
+    const postId = req.params.postId;
+    const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+    // const userId = 'stravinest';
+    const { title, content, image } = req.body;
+    const postInfo = await Posts.findOne({ where: { postId, userId } });
+    //받은 userID와 postId  와 일치하는 게시글 찾기
+    if (postInfo) {
+      //게시글 있으면 아래실행
+      console.log(postInfo.image);
+      const beforeImage = postInfo.image.split('/')[4]; //이미지 주소 분리
 
-        s3.deleteObject(
-          //original기존 파일 삭제
-          {
-            Bucket: 'stravinestbucket',
-            Key: `original/${beforeImage}`,
-          },
-          (err, data) => {
-            if (err) {
-              throw err;
-            }
-            console.log('s3 deleteObject', data);
+      s3.deleteObject(
+        //original기존 파일 삭제
+        {
+          Bucket: 'stravinestbucket',
+          Key: `original/${beforeImage}`,
+        },
+        (err, data) => {
+          if (err) {
+            throw err;
           }
-        );
-        s3.deleteObject(
-          //thumb기존 파일 삭제
-          {
-            Bucket: 'stravinestbucket',
-            Key: `thumb/${beforeImage}`,
-          },
-          (err, data) => {
-            if (err) {
-              throw err;
-            }
-            console.log('s3 thumb deleteObject', data);
+          console.log('s3 deleteObject', data);
+        }
+      );
+      s3.deleteObject(
+        //thumb기존 파일 삭제
+        {
+          Bucket: 'stravinestbucket',
+          Key: `thumb/${beforeImage}`,
+        },
+        (err, data) => {
+          if (err) {
+            throw err;
           }
-        );
+          console.log('s3 thumb deleteObject', data);
+        }
+      );
 
-        await Posts.update(
-          {
-            title: title,
-            content: content,
-            image: image, //이미지 새로 교체해서 넣어줌
-          },
-          {
-            where: { postId: postId, userId: userId },
-          }
-        );
-        res.send({ result: '게시글을 수정하였습니다.' });
-      } else {
-        //게시글 없으면 수정 실패
-        res.status(401).send({ result: '게시글이 없거나 권한이 없습니다..' });
-      }
-
-      //
-    } catch (error) {
-      console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
-      res.status(400).send({
-        errorMessage: '게시글 수정에 실패했습니다.',
-      });
+      await Posts.update(
+        {
+          title: title,
+          content: content,
+          image: image, //이미지 새로 교체해서 넣어줌
+        },
+        {
+          where: { postId: postId, userId: userId },
+        }
+      );
+      res.send({ result: '게시글을 수정하였습니다.' });
+    } else {
+      //게시글 없으면 수정 실패
+      res.status(401).send({ result: '게시글이 없거나 권한이 없습니다..' });
     }
+
+    //
+  } catch (error) {
+    console.log(`${req.method} ${req.originalUrl} : ${error.message}`);
+    res.status(400).send({
+      errorMessage: '게시글 수정에 실패했습니다.',
+    });
   }
-);
+});
 
 //게시글 등록 formdata 방식으로 받아오는 api
 router.post(
   '/post',
-  // authMiddleware,
+  authMiddleware,
   upload.single('image'), //upload(multer) api요청 주소로 formdata 형식으로 name 이 이미지로 1개 온것을 받는다.
   //formdata 안에 파일 말고 다른 정보는 body로 들어온다.
   async (req, res) => {
     try {
-      //const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-      const userId = 'stravinest';
+      const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+      // const userId = 'stravinest';
       const { title, content } = req.body; //formdata로 같이 넘어옴
       if (req.file) {
         //파일이 있으면 즉 image가 넘어오면
@@ -290,11 +282,11 @@ router.put(
 );
 
 //게시글 삭제
-router.patch('/delete/:postId', async (req, res) => {
+router.patch('/delete/:postId',authMiddleware, async (req, res) => {
   try {
     const postId = req.params.postId;
-    //  const { userId } = res.locals.user; //로그인 정보에서 가져온다.
-    const userId = 'stravinest';
+     const { userId } = res.locals.user; //로그인 정보에서 가져온다.
+    // const userId = 'stravinest';
     const postInfo = await Posts.findOne({ where: { postId, userId } });
 
     // const s3 = new AWS.S3();
