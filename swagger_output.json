@@ -12,7 +12,7 @@
       "cookieAuth": {
         "type": "apiKey",
         "in": "cookie",
-        "name": "JSESSIONID"
+        "name": "Set-Cookie"
       }
     }
   },
@@ -22,8 +22,8 @@
   "securityDefinitions": {
       "cookieAuth": {
         "type": "apiKey",
-        "name":"Cookie",
-        "in": "header",
+        "name":"Set-Cookie",
+        "in": "cookie",
         "description": "cookiesend"
       }
     

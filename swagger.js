@@ -32,8 +32,8 @@ const doc = {
   securityDefinitions: {//header 방식으로 로그인할때 연결 방법 
     cookieAuth: {
       type: "apiKey",
-      name:"Cookie",
-      in: "header",
+      name:"Set-Cookie",
+      in: "cookie",
       description: "cookiesend"
     }
   },
