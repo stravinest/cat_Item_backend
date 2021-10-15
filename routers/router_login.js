@@ -47,19 +47,20 @@ router.post('/', async (req, res) => {
     console.log(token);
 
     //생성한 토큰을 쿠키에 담아서 response
-    res.cookie('token', token, {
-      httpOnly: true,
-    });
+    // res.cookie('token', token, {
+    //   httpOnly: true,
+    // });
 
     res.send({
       code: 201,
+      token: token,
       message: '로그인 완료',
     });
 
   } catch (error) {
     console.log(error);
     return res.status(400).json({
-      code: 500,
+      code: 400,
       errorMessage: '알 수 없는 오류가 발생했습니다. 관리자에게 문의해주세요.',
     });
   }
