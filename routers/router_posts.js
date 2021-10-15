@@ -52,6 +52,8 @@ router.get('/', async (req, res) => {
 });
 
 //프론트 단에서 upload 한후 그 이미지 파일을 받아서 전달해주는 api
+//'image'는 프론트에서 name 지정한 것과 일치해야함
+//req.file.location => 객체 유알엘 들어가있음
 router.post('/upload', upload.single('image'), function (req, res) {
   const originalUrl = req.file.location;
   console.log(req.body);
