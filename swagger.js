@@ -29,13 +29,13 @@ const doc = {
       "description": "댓글"
     }
   ],
-  securityDefinitions: {//header 방식으로 로그인할때 연결 방법 
-    cookieAuth: {
+  securityDefinitions: {
+    Bearer: {
       type: "apiKey",
-      name:"Set-Cookie",
-      in: "cookie",
-      description: "cookiesend"
-    }
+      name: "Authorization",
+      in: "header",
+      description: "send JWT",
+    },
   },
   definitions: {
     Users: {
