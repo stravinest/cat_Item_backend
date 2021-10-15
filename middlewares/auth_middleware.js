@@ -4,7 +4,7 @@ const { Users } = require('../models');
 module.exports = (req, res, next) => {
 
   console.log('auth 미들웨어 진입')
-  const { authorization } = req.body.token;
+  const { authorization } = req.body.usertoken;
 
   if (!authorization) {
     console.log('first IF')

@@ -6,7 +6,7 @@ const doc = {
     title: '8조 API',
     description: 'Description',
   },
-  host: 'localhost:3000', //배포 하려고 하는 host에 맞춰줘야 동작함
+  host: '3.34.255.91', //배포 하려고 하는 host에 맞춰줘야 동작함
   basePath: '/',
   schemes: ['http','https'],
   consumes: ['application/json'],

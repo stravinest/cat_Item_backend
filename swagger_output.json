@@ -5,7 +5,7 @@
     "title": "8조 API",
     "description": "Description"
   },
-  "host": "localhost:3000",
+  "host": "3.34.255.91",
   "basePath": "/",
   "components": {
     "securitySchemes": {

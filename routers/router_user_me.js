@@ -5,8 +5,10 @@ const jwt = require('jsonwebtoken');
 //const cors = require("cors");
 // router.use(cors())
 router.post('/me', async (req, res) => {
-  const token = req.body.token;
-  console.log(token)
+  const token = req.body.usertoken;
+  console.log ("토큰 test")
+  console.log(req.body)
+  
   if (token) {
     console.log(token)
     const { userId } = jwt.verify(token, process.env.SECRET_KEY);
