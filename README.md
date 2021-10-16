@@ -9,12 +9,12 @@
 <h2>제작기간 팀원소개</h2>
 <li> 2021 10월11일 ~ 2021 10월 16일</li>
 <li>5인 1조 팀프로젝트<br>
- front-end:
+<li> front-end:
  박상수, 박주승, 류은설    
  
- [front github]( https://github.com/GitPJS/cat_item_frontend/blob/main/README.md)<br>
+&#160;&#160;&#160;&#160; [front github]( https://github.com/GitPJS/cat_item_frontend/blob/main/README.md)<br>
  
- back-end:
+<li> back-end:
  양주혁, 전은규
   
 <h2>사용기술</h2>
