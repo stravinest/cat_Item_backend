@@ -47,6 +47,7 @@
 [API스프레드시트](https://docs.google.com/spreadsheets/d/1GvhNR2HwSWzPTe2v8AqtW1i7GKxYRQVDAgfor6uLf0o/edit#gid=0)
   
 [API스웨거](http://stravinest.shop/swagger/)
+[API스웨거사용법](https://velog.io/@stravinest/swagger-%EC%82%AC%EC%9A%A9%EB%B2%95%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%9C%A0%EC%A7%80)
 
 <h2>문제 해결</h2>
   
